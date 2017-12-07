@@ -1,1 +1,1 @@
-# rocnikovy-projekt
+# Rocnikovy projekt
