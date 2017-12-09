@@ -1,18 +1,20 @@
 (ns rocnikovy-projekt.core
     (:require [reagent.core :as reagent :refer [atom]]
               [secretary.core :as secretary :include-macros true]
-              [accountant.core :as accountant]))
+              [accountant.core :as accountant]
+              [rocnikovy-projekt.not-found :refer [not-found-page]]))
 
 ;; -------------------------
 ;; Views
 
 (defn home-page []
-  [:div [:h2 "Welcome to rocnikovy-projekt"]
-   [:div [:a {:href "/about"} "go to about page"]]])
+  [:div {:class "Homepage"}
+   [:div {:class "Homepage__title"} "Vitajte na stranke mojho rocnikoveho projektu"]
+   [:div {:class "Homepage__link"} [:a {:href "/dashboard"} "Dashboard skol"]]])
 
-(defn about-page []
-  [:div [:h2 "About rocnikovy-projekt"]
-   [:div [:a {:href "/"} "go to the home page"]]])
+(defn dashboard-page []
+  [:div [:h2 "Dashboard"]
+   [:div [:a {:href "/"} "Spat"]]])
 
 ;; -------------------------
 ;; Routes
@@ -25,8 +27,11 @@
 (secretary/defroute "/" []
   (reset! page #'home-page))
 
-(secretary/defroute "/about" []
-  (reset! page #'about-page))
+(secretary/defroute "/dashboard" []
+  (reset! page #'dashboard-page))
+
+(secretary/defroute "*" []
+  (reset! page #'not-found-page))
 
 ;; -------------------------
 ;; Initialize app
