@@ -1,43 +1,37 @@
 (ns rocnikovy-projekt.core
-    (:require [reagent.core :as reagent :refer [atom]]
+    (:require [cljsjs.material-ui]
+              [cljs-react-material-ui.core :refer [get-mui-theme color]]
+              [cljs-react-material-ui.reagent :as ui]
+              [reagent.core :as reagent :refer [atom]]
               [secretary.core :as secretary :include-macros true]
               [accountant.core :as accountant]
-              [rocnikovy-projekt.not-found :refer [not-found-page]]))
-
-;; -------------------------
-;; Views
-
-(defn home-page []
-  [:div {:class "Homepage"}
-   [:div {:class "Homepage__title"} "Vitajte na stranke mojho rocnikoveho projektu"]
-   [:div {:class "Homepage__link"} [:a {:href "/dashboard"} "Dashboard skol"]]])
-
-(defn dashboard-page []
-  [:div [:h2 "Dashboard"]
-   [:div [:a {:href "/"} "Spat"]]])
+              [rocnikovy-projekt.not-found :refer [not-found-page]]
+              [rocnikovy-projekt.cursors :refer [current-page-cursor]]
+              [rocnikovy-projekt.components :refer [home-page dashboard-page]]))
 
 ;; -------------------------
 ;; Routes
 
-(def page (atom #'home-page))
-
-(defn current-page []
-  [:div [@page]])
+(defn app-page []
+  [ui/mui-theme-provider
+   {:mui-theme (get-mui-theme
+                {:palette {:shadow-color "rgba(0, 0, 0, 0)" :primary1-color "#00c371"}})}
+   [@current-page-cursor]])
 
 (secretary/defroute "/" []
-  (reset! page #'home-page))
+  (reset! current-page-cursor #'home-page))
 
 (secretary/defroute "/dashboard" []
-  (reset! page #'dashboard-page))
+  (reset! current-page-cursor #'dashboard-page))
 
 (secretary/defroute "*" []
-  (reset! page #'not-found-page))
+  (reset! current-page-cursor #'not-found-page))
 
 ;; -------------------------
 ;; Initialize app
 
 (defn mount-root []
-  (reagent/render [current-page] (.getElementById js/document "app")))
+  (reagent/render [app-page] (.getElementById js/document "app")))
 
 (defn init! []
   (accountant/configure-navigation!
