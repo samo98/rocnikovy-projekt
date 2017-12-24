@@ -53,3 +53,28 @@ body {
   font-size: 1.5rem;
   align-items: center;
 }
+
+.Dashboard {
+  margin: 10px;
+  height: calc(100vh - 20px);
+  display: flex;
+  flex-direction: column;
+}
+
+.Dashboard__title {
+  font-weight: bold;
+  text-align: center;
+  font-size: 2.5rem;
+}
+
+.Dashboard__back {
+  display: flex;
+}
+
+.Dashboard__search {
+  display: flex;
+}
+
+.Dashboard__search__icon {
+  margin-top: 15px;
+}

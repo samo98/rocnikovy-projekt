@@ -6,3 +6,9 @@
 
 (def current-page-cursor
   (reagent/cursor app-state [:current-page]))
+
+(def schools-cursor
+  (reagent/cursor app-state [:schools]))
+
+(def dashboard-search-cursor
+  (reagent/cursor app-state [:dashboard :search]))
