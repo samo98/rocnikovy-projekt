@@ -2,7 +2,9 @@
   (:require [cljs-react-material-ui.icons :as ic]
             [cljs-react-material-ui.reagent :as ui]
             [reagent.core :as reagent]
-            [rocnikovy-projekt.cursors :refer [schools-cursor dashboard-search-cursor filtered-school-ids]]
+            [accountant.core :as accountant]
+            [rocnikovy-projekt.cursors :refer [schools-cursor dashboard-search-cursor filtered-school-ids
+                                               current-page-params-cursor school-cursor]]
             [rocnikovy-projekt.helpers :refer [get-school-by-id]]))
 
 ;; -------------------------
@@ -15,19 +17,24 @@
 
 (defn home-page []
   [:div {:class "Homepage"}
-   [:div {:class "Homepage__title"} "Vitajte na stranke mojho rocnikoveho projektu"]
+   [:div {:class "Homepage__title"} "Vitajte na stránke môjho ročníkového projektu"]
    [:div {:class "Homepage__link"} [:a {:href "/dashboard"} "Zoznam škôl"]]])
 
 (defn dashboard-row [id]
-  [ui/table-row {:class-name "DashboardRow" :hoverable true}
+  [ui/table-row {:class-name "DashboardRow"
+                 :hoverable true
+                 :on-click (fn [] (accountant/navigate! (str "/school/" (name id))))}
     [ui/table-row-column (:name (get-school-by-id id))]])
+
+(defn back-arrow [url]
+  [:a {:href url :style {:text-decoration "none"}}
+    [:div {:class "BackArrow"} (ic/navigation-arrow-back)
+      [:div {:style {:margin "auto 0" :color "black"}} "Späť"]]])
 
 (defn dashboard-page []
   [:div {:class "Dashboard"}
    [:div {:class "Dashboard__title"} "Zoznam škôl"]
-   [:a {:href "/" :style {:text-decoration "none"}}
-    [:div {:class "Dashboard__back"} (ic/navigation-arrow-back)
-     [:div {:style {:margin "auto 0" :color "black"}} "Späť"]]]
+   [back-arrow "/"]
    [:div {:class "Dashboard__search"}
     [ic/action-search {:class-name "Dashboard__search__icon"}]
     [ui/auto-complete {:dataSource (map (fn [id] (:name (get-school-by-id id))) (keys @schools-cursor))
@@ -47,3 +54,8 @@
     [ui/table-body
       (for [id (filtered-school-ids)]
         ^{:key id} [dashboard-row id])]]])
+
+(defn school-page [{id :id}]
+  [:div {:class "School"}
+   [:div {:class "School__title"} (:name @(school-cursor (keyword id)))]
+   [back-arrow "/dashboard"]])

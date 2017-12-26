@@ -7,8 +7,8 @@
               [secretary.core :as secretary :include-macros true]
               [accountant.core :as accountant]
               [rocnikovy-projekt.not-found :refer [not-found-page]]
-              [rocnikovy-projekt.cursors :refer [current-page-cursor]]
-              [rocnikovy-projekt.components :refer [home-page dashboard-page]]
+              [rocnikovy-projekt.cursors :refer [current-page-cursor current-page-params-cursor]]
+              [rocnikovy-projekt.components :refer [home-page dashboard-page school-page]]
               [cljs-http.client :as http]
               [cljs.core.async :refer [<!]]))
 
@@ -19,13 +19,17 @@
   [ui/mui-theme-provider
    {:mui-theme (get-mui-theme
                 {:palette {:shadow-color "rgba(0, 0, 0, 0)" :primary1-color "#00c371"}})}
-   [@current-page-cursor]])
+   [@current-page-cursor @current-page-params-cursor]])
 
 (secretary/defroute "/" []
   (reset! current-page-cursor #'home-page))
 
 (secretary/defroute "/dashboard" []
   (reset! current-page-cursor #'dashboard-page))
+
+(secretary/defroute "/school/:id" {:as params}
+  (reset! current-page-params-cursor params)
+  (reset! current-page-cursor #'school-page))
 
 (secretary/defroute "*" []
   (reset! current-page-cursor #'not-found-page))
