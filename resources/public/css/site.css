@@ -78,3 +78,12 @@ body {
 .Dashboard__search__icon {
   margin-top: 15px;
 }
+
+.Dashboard__search__cancel {
+  margin-top: 15px;
+  cursor: pointer;
+}
+
+.DashboardRow {
+  cursor: pointer;
+}
