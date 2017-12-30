@@ -5,10 +5,16 @@
 ;; Selector
 
 (def current-page-cursor
-  (reagent/cursor app-state [:current-page]))
+  (reagent/cursor app-state [:current-page :component]))
+
+(def current-page-params-cursor
+  (reagent/cursor app-state [:current-page :params]))
 
 (def schools-cursor
   (reagent/cursor app-state [:schools]))
+
+(defn school-cursor [id]
+  (reagent/cursor app-state [:schools id]))
 
 (def dashboard-search-cursor
   (reagent/cursor app-state [:dashboard :search]))

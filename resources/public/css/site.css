@@ -67,10 +67,6 @@ body {
   font-size: 2.5rem;
 }
 
-.Dashboard__back {
-  display: flex;
-}
-
 .Dashboard__search {
   display: flex;
 }
@@ -86,4 +82,18 @@ body {
 
 .DashboardRow {
   cursor: pointer;
+}
+
+.BackArrow {
+  display: flex;
+}
+
+.School {
+  margin: 10px;
+}
+
+.School__title {
+  font-weight: bold;
+  text-align: center;
+  font-size: 2.5rem;
 }
