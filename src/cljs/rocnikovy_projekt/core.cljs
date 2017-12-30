@@ -1,5 +1,4 @@
 (ns rocnikovy-projekt.core
-    (:require-macros [cljs.core.async.macros :refer [go]])
     (:require [cljsjs.material-ui]
               [cljs-react-material-ui.core :refer [get-mui-theme color]]
               [cljs-react-material-ui.reagent :as ui]
@@ -8,18 +7,16 @@
               [accountant.core :as accountant]
               [rocnikovy-projekt.not-found :refer [not-found-page]]
               [rocnikovy-projekt.cursors :refer [current-page-cursor current-page-params-cursor]]
-              [rocnikovy-projekt.components :refer [home-page dashboard-page school-page]]
-              [cljs-http.client :as http]
-              [cljs.core.async :refer [<!]]))
+              [rocnikovy-projekt.components :refer [home-page dashboard-page school-page]]))
 
 ;; -------------------------
 ;; Routes
 
 (defn app-page []
   [ui/mui-theme-provider
-   {:mui-theme (get-mui-theme
-                {:palette {:shadow-color "rgba(0, 0, 0, 0)" :primary1-color "#00c371"}})}
-   [@current-page-cursor @current-page-params-cursor]])
+    {:mui-theme (get-mui-theme
+                  {:palette {:shadow-color "rgba(0, 0, 0, 0)" :primary1-color "#00c371"}})}
+    [@current-page-cursor @current-page-params-cursor]])
 
 (secretary/defroute "/" []
   (reset! current-page-cursor #'home-page))
@@ -33,14 +30,6 @@
 
 (secretary/defroute "*" []
   (reset! current-page-cursor #'not-found-page))
-
-;; Remote call sample
-
-(defn make-remote-call [endpoint]
-  (go (let [response (<! (http/post endpoint {:json-params {:Q1 "Q" :Q2 "W"}}))]
-        (js/console.log response))))
-
-(make-remote-call "/api")
 
 ;; -------------------------
 ;; Initialize app
