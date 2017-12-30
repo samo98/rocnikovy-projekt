@@ -4,7 +4,8 @@
             [hiccup.page :refer [include-js include-css html5]]
             [rocnikovy-projekt.middleware :refer [wrap-middleware]]
             [config.core :refer [env]]
-            [rocnikovy-projekt.api :refer [api]]))
+            [rocnikovy-projekt.api :refer [api]]
+            [ring.middleware.json :as middleware]))
 
 (def mount-target
   [:div#app
@@ -33,4 +34,6 @@
   (not-found "404 Not Found"))
 
 (def app (-> #'routes
+             (middleware/wrap-json-body {:keywords? true})
+             middleware/wrap-json-response
              wrap-middleware))
