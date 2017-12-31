@@ -97,3 +97,16 @@ body {
   text-align: center;
   font-size: 2.5rem;
 }
+
+.LoadingHelper {
+  font-size: 3rem;
+  font-weight: 300;
+  color: #9e9e9e;
+  height: 100%;
+  display: flex;
+  padding-top: 4rem;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  flex-direction: column;
+}
