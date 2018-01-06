@@ -14,13 +14,13 @@
   (reagent/cursor app-state [:schools]))
 
 (defn school-cursor [id]
-  (reagent/cursor app-state [:schools id]))
+  (reagent/cursor app-state [:schools (keyword id)]))
 
 (def dashboard-search-cursor
   (reagent/cursor app-state [:dashboard :search]))
 
 (defn is-searching-dashboard []
-  (not(or(= (:text @dashboard-search-cursor) nil) (= (:text @dashboard-search-cursor) ""))))
+  (not(or(nil? (:text @dashboard-search-cursor)) (= (:text @dashboard-search-cursor) ""))))
 
 (defn filtered-school-ids []
   (if (is-searching-dashboard)
