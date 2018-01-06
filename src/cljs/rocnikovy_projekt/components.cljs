@@ -6,7 +6,8 @@
             [rocnikovy-projekt.cursors :refer [schools-cursor dashboard-search-cursor filtered-school-ids
                                                current-page-params-cursor school-cursor]]
             [rocnikovy-projekt.helpers :refer [get-school-by-id]]
-            [rocnikovy-projekt.actions :refer [fetch-schools fetch-school]]))
+            [rocnikovy-projekt.actions :refer [fetch-schools fetch-school]]
+            [rocnikovy-projekt.loading :refer [loading-helper]]))
 
 ;; -------------------------
 ;; Helpers
@@ -50,17 +51,19 @@
                                                 (filter (fn [id] (material-filter text (:name (id @schools-cursor))))
                                                 (keys @schools-cursor))))}]
         [ic/navigation-cancel {:class-name "Dashboard__search__cancel" :on-click (fn [] (reset! dashboard-search-cursor {:text ""}))}]]
-      [ui/table {:class-name "Dashboard__table" :selectable false}
-        [ui/table-header {:adjust-for-checkbox false :display-select-all false}
-          [ui/table-row
-            [ui/table-header-column "Názov"]]]
-        [ui/table-body
-          (for [id (filtered-school-ids)]
-            ^{:key id} [dashboard-row id])]]]))
+      (loading-helper {:is-loaded (some? @schools-cursor)}
+        [ui/table {:class-name "Dashboard__table" :selectable false}
+          [ui/table-header {:adjust-for-checkbox false :display-select-all false}
+            [ui/table-row
+              [ui/table-header-column "Názov"]]]
+          [ui/table-body
+            (for [id (filtered-school-ids)]
+              ^{:key id} [dashboard-row id])]])]))
 
 (defn school-page [{id :id}]
   (fetch-school id)
   (fn [{id :id}]
     [:div {:class "School"}
-      [:div {:class "School__title"} (:name @(school-cursor id))]
-      [back-arrow "/dashboard"]]))
+      (loading-helper {:is-loaded (some? @(school-cursor id))}
+        [:div {:class "School__title"} (:name @(school-cursor id))]
+        [back-arrow "/dashboard"])]))
