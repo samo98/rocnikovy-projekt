@@ -1,6 +1,9 @@
-(ns rocnikovy-projekt.database)
+(ns rocnikovy-projekt.database
+  (:require [korma.db :refer [defdb postgres]]
+            [korma.core :refer [defentity]]))
 
-(def database {:schools {:1 {:name "GABNAM"}
-                         :2 {:name "GVARZA"}
-                         :3 {:name "GJH"}
-                         :4 {:name "GAMČA"}}})
+(defdb db (postgres {:db "rocnikac"
+                     :user "samuel"
+                     :password "a"}))
+
+(defentity schools)
