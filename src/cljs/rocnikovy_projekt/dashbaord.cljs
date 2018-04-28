@@ -1,12 +1,12 @@
-(ns rocnikovy-projekt.components
+(ns rocnikovy-projekt.dashboard
   (:require [cljs-react-material-ui.icons :as ic]
             [cljs-react-material-ui.reagent :as ui]
             [reagent.core :as reagent]
+            [rocnikovy-projekt.state :refer [app-state]]
             [accountant.core :as accountant]
-            [rocnikovy-projekt.cursors :refer [schools-cursor dashboard-search-cursor filtered-school-ids
-                                               current-page-params-cursor school-cursor]]
-            [rocnikovy-projekt.helpers :refer [get-school-by-id]]
-            [rocnikovy-projekt.actions :refer [fetch-schools fetch-school]]
+            [rocnikovy-projekt.api :refer [make-remote-call]]
+            [rocnikovy-projekt.cursors :refer [current-page-params-cursor]]
+            [rocnikovy-projekt.helpers :refer [back-arrow]]
             [rocnikovy-projekt.loading :refer [loading-helper]]))
 
 ;; -------------------------
@@ -15,23 +15,42 @@
 (def material-filter (aget js/MaterialUI "AutoComplete" "caseInsensitiveFilter"))
 
 ;; -------------------------
-;; Views
+;; Cursors
 
-(defn home-page []
-  [:div {:class "Homepage"}
-    [:div {:class "Homepage__title"} "Vitajte na stránke môjho ročníkového projektu"]
-    [:div {:class "Homepage__link"} [:a {:href "/dashboard"} "Zoznam škôl"]]])
+(def schools-cursor
+  (reagent/cursor app-state [:schools]))
+
+(def dashboard-search-cursor
+  (reagent/cursor app-state [:dashboard :search]))
+
+(defn is-searching-dashboard []
+  (not(or(nil? (:text @dashboard-search-cursor)) (= (:text @dashboard-search-cursor) ""))))
+
+(defn filtered-school-ids []
+  (if (is-searching-dashboard)
+      (keys (select-keys @schools-cursor (:searchIds @dashboard-search-cursor)))
+      (keys @schools-cursor)))
+
+;; -------------------------
+;; Actions
+
+(defn fetch-schools []
+  (make-remote-call "/schools"
+    (fn [response]
+      (reset! schools-cursor
+        (reduce
+          (fn [result school]
+            (conj result {(keyword (str(:id school))) school}))
+          {} response)))))
+
+;; -------------------------
+;; Views
 
 (defn dashboard-row [id]
   [ui/table-row {:class-name "DashboardRow"
                  :hoverable true
                  :on-click (fn [] (accountant/navigate! (str "/school/" (name id))))}
-    [ui/table-row-column (:name (get-school-by-id id))]])
-
-(defn back-arrow [url]
-  [:a {:href url :style {:text-decoration "none"}}
-    [:div {:class "BackArrow"} (ic/navigation-arrow-back)
-      [:div {:style {:margin "auto 0" :color "black"}} "Späť"]]])
+    [ui/table-row-column (:name (get @schools-cursor id))]])
 
 (defn dashboard-page []
   (fetch-schools)
@@ -41,7 +60,7 @@
       [back-arrow "/"]
       [:div {:class "Dashboard__search"}
         [ic/action-search {:class-name "Dashboard__search__icon"}]
-        [ui/auto-complete {:dataSource (map (fn [id] (:name (get-school-by-id id))) (keys @schools-cursor))
+        [ui/auto-complete {:dataSource (map (fn [id] (:name (get @schools-cursor id))) (keys @schools-cursor))
                            :name "Name filter"
                            :search-text (:text @dashboard-search-cursor)
                            :filter material-filter
@@ -59,11 +78,3 @@
           [ui/table-body
             (for [id (filtered-school-ids)]
               ^{:key id} [dashboard-row id])]])]))
-
-(defn school-page [{id :id}]
-  (fetch-school id)
-  (fn [{id :id}]
-    [:div {:class "School"}
-      (loading-helper {:is-loaded (some? @(school-cursor id))}
-        [:div {:class "School__title"} (:name @(school-cursor id))]
-        [back-arrow "/dashboard"])]))

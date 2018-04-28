@@ -7,7 +7,9 @@
               [accountant.core :as accountant]
               [rocnikovy-projekt.not-found :refer [not-found-page]]
               [rocnikovy-projekt.cursors :refer [current-page-cursor current-page-params-cursor]]
-              [rocnikovy-projekt.components :refer [home-page dashboard-page school-page]]))
+              [rocnikovy-projekt.dashboard :refer [dashboard-page]]
+              [rocnikovy-projekt.homepage :refer [home-page]]
+              [rocnikovy-projekt.schoolpage :refer [school-page]]))
 
 ;; -------------------------
 ;; Routes

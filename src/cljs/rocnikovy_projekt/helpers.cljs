@@ -1,4 +1,7 @@
 (ns rocnikovy-projekt.helpers
-  (:require [rocnikovy-projekt.cursors :refer [schools-cursor]]))
+  (:require [cljs-react-material-ui.icons :as ic]))
 
-(defn get-school-by-id [id] (get @schools-cursor id))
+(defn back-arrow [url]
+  [:a {:href url :style {:text-decoration "none"}}
+    [:div {:class "BackArrow"} (ic/navigation-arrow-back)
+      [:div {:style {:margin "auto 0" :color "black"}} "Späť"]]])
