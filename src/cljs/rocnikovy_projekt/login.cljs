@@ -2,7 +2,8 @@
   (:require [cljs-react-material-ui.reagent :as ui]
             [reagent.core :as reagent]
             [rocnikovy-projekt.helpers :refer [back-arrow]]
-            [rocnikovy-projekt.state :refer [app-state]]))
+            [rocnikovy-projekt.state :refer [app-state]]
+            [rocnikovy-projekt.api :refer [make-post-request]]))
 
 ;; -------------------------
 ;; Cursors
@@ -12,6 +13,15 @@
 
 (def login-password-cursor
   (reagent/cursor app-state [:login :password]))
+
+;; -------------------------
+;; Actions
+
+(defn login-request []
+  (make-post-request "/login" {:json-params {:username @login-name-cursor :password @login-password-cursor}}
+    (fn [response]
+      (print "aaa" response))))
+  
 
 ;; -------------------------
 ;; Views
@@ -35,4 +45,5 @@
         [ui/raised-button {:class "Login__submit"
                            :primary true
                            :label "Login"
-                           :full-width true}]]]])
+                           :full-width true
+                           :on-click login-request}]]]])

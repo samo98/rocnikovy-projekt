@@ -13,6 +13,7 @@
                  [ring "1.6.2"]
                  [ring/ring-json "0.4.0"]
                  [ring/ring-defaults "0.3.1"]
+                 [metosin/ring-http-response "0.9.0"]
                  [compojure "1.6.0"]
                  [hiccup "1.0.5"]
                  [yogthos/config "0.9"]

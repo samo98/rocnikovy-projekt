@@ -5,7 +5,8 @@
             [rocnikovy-projekt.middleware :refer [wrap-middleware]]
             [config.core :refer [env]]
             [rocnikovy-projekt.api :refer [api]]
-            [ring.middleware.json :as middleware]))
+            [ring.middleware.json :as middleware]
+            [ring.middleware.cookies :refer [wrap-cookies]]))
 
 (def mount-target
   [:div#app
@@ -36,4 +37,5 @@
 (def app (-> #'routes
              (middleware/wrap-json-body {:keywords? true})
              middleware/wrap-json-response
+             wrap-cookies
              wrap-middleware))
