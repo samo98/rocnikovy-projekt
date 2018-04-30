@@ -54,6 +54,10 @@ body {
   align-items: center;
 }
 
+.Homepage__login {
+  margin: 10px;
+}
+
 .Dashboard {
   margin: 10px;
   height: calc(100vh - 20px);
@@ -124,4 +128,24 @@ body {
 .School__body__item__title {
   font-weight: bold;
   font-size: 1.7rem;
+}
+
+.Login {
+  max-width: 400px;
+  padding: 0 1rem;
+  margin: 0 auto;
+  margin-top: 4rem;
+}
+
+.Login__wrapper {
+  margin: 15px;
+}
+
+.Login__title {
+  font-size: 3rem;
+  font-weight: 300;
+}
+
+.Login__submit {
+  margin-top: 1rem; 
 }

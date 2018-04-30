@@ -9,7 +9,8 @@
               [rocnikovy-projekt.cursors :refer [current-page-cursor current-page-params-cursor]]
               [rocnikovy-projekt.dashboard :refer [dashboard-page]]
               [rocnikovy-projekt.homepage :refer [home-page]]
-              [rocnikovy-projekt.schoolpage :refer [school-page]]))
+              [rocnikovy-projekt.schoolpage :refer [school-page]]
+              [rocnikovy-projekt.login :refer [login]]))
 
 ;; -------------------------
 ;; Routes
@@ -22,6 +23,9 @@
 
 (secretary/defroute "/" []
   (reset! current-page-cursor #'home-page))
+
+(secretary/defroute "/login" []
+  (reset! current-page-cursor #'login))
 
 (secretary/defroute "/dashboard" []
   (reset! current-page-cursor #'dashboard-page))
