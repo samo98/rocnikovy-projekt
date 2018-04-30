@@ -17,7 +17,19 @@
 (defn school-page [{id :id}]
   (fetch-school id)
   (fn [{id :id}]
-    [:div {:class "School"}
-      (loading-helper {:is-loaded (some? @(school-cursor id))}
-        [:div {:class "School__title"} (:name @(school-cursor id))]
-        [back-arrow "/dashboard"])]))
+    (let [schoolData @(school-cursor id)]
+      [:div {:class "School"}
+        (loading-helper {:is-loaded (some? schoolData)}
+          [:div {:class "School__title"} (:name schoolData)]
+          [back-arrow "/dashboard"]
+          [:div {:class "School__body"}
+            [:div {:class "School__body__item"}
+              [:div {:class "School__body__item__title"} "Webstránka"]
+              [:a {:href (:webpage_url schoolData) :target "_blank"}
+                (:webpage_url schoolData)]]
+            [:div {:class "School__body__item"}
+              [:div {:class "School__body__item__title"} "Adresa"]
+              [:div (:address schoolData)]]
+            [:div {:class "School__body__item"}
+              [:div {:class "School__body__item__title"} "Skratka"]
+              [:div (:acronym schoolData)]]])])))
