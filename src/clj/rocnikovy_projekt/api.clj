@@ -1,7 +1,7 @@
 (ns rocnikovy-projekt.api
   (:require [compojure.core :refer [GET POST routes]]
             [ring.util.response :refer [response not-found]]
-            [ring.util.http-response :refer [unauthorized]]
+            [ring.util.http-response :refer [unauthorized bad-request]]
             [rocnikovy-projekt.database :refer [schools users session_tokens]]
             [rocnikovy-projekt.helpers :refer [generate-token]]
             [korma.core :refer [select where insert values join delete]]))
@@ -39,6 +39,13 @@
     (GET "/logout" {{token "token"} :cookies}
       (if (some? token)
         (delete session_tokens (where {:token (Integer/parseInt (:value token))})))
-      {:cookies {"token" {:value "" :max-age 0}}})))
+      {:cookies {"token" {:value "" :max-age 0}}})
+    (POST "/register" {{username :username password :password} :body}
+      (let [user (select users (where {:name username}))]
+        (if (empty? user)
+          (insert users (values {:name username
+                                 :password password
+                                 :createdat (System/currentTimeMillis)}))
+          (bad-request "Username is already used"))))))
       
         

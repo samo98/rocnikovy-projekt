@@ -13,7 +13,8 @@
               [rocnikovy-projekt.schoolpage :refer [school-page]]
               [rocnikovy-projekt.login :refer [login]]
               [rocnikovy-projekt.logged-bar :refer [logged-bar]]
-              [rocnikovy-projekt.api :refer [make-remote-call]]))
+              [rocnikovy-projekt.api :refer [make-remote-call]]
+              [rocnikovy-projekt.register :refer [register]]))
 
 ;; -------------------------
 ;; Actions
@@ -41,6 +42,9 @@
 
 (secretary/defroute "/login" []
   (reset! current-page-cursor #'login))
+
+(secretary/defroute "/register" []
+  (reset! current-page-cursor #'register))
 
 (secretary/defroute "/dashboard" []
   (reset! current-page-cursor #'dashboard-page))
