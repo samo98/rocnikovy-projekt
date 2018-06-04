@@ -35,12 +35,14 @@ INSERT INTO schools(name, acronym, address, webpage_url) VALUES (
 
 CREATE TABLE users (
   id serial primary key,
+  admin boolean DEFAULT FALSE,
   name text,
   password text,
   createdAt bigint
 );
 
-INSERT INTO users(name, password, createdAt) VALUES (
+INSERT INTO users(admin, name, password, createdAt) VALUES (
+  true, 
   'admin',
   'admin',
   '1525093810242'

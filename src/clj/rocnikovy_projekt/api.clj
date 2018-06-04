@@ -4,7 +4,7 @@
             [ring.util.http-response :refer [unauthorized]]
             [rocnikovy-projekt.database :refer [schools users session_tokens]]
             [rocnikovy-projekt.helpers :refer [generate-token]]
-            [korma.core :refer [select where insert values join]]))
+            [korma.core :refer [select where insert values join delete]]))
 
 (def expiration-time 86400000)
 
@@ -35,4 +35,10 @@
           (if (empty? user)
             {}
             (response {:user (first user)})))
-        {}))))
+        {}))
+    (GET "/logout" {{token "token"} :cookies}
+      (if (some? token)
+        (delete session_tokens (where {:token (Integer/parseInt (:value token))})))
+      {:cookies {"token" {:value "" :max-age 0}}})))
+      
+        
