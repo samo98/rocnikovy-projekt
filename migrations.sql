@@ -49,7 +49,7 @@ INSERT INTO users(name, password, createdAt) VALUES (
 DROP TABLE users;
 
 CREATE TABLE session_tokens (
-  token serial primary key,
+  token integer primary key,
   userId integer REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
   expiresAt bigint,
   createdAt bigint

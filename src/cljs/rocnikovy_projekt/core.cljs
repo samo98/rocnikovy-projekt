@@ -6,20 +6,35 @@
               [secretary.core :as secretary :include-macros true]
               [accountant.core :as accountant]
               [rocnikovy-projekt.not-found :refer [not-found-page]]
-              [rocnikovy-projekt.cursors :refer [current-page-cursor current-page-params-cursor]]
+              [rocnikovy-projekt.cursors :refer [current-page-cursor logged-user-cursor
+                                                 current-page-params-cursor]]
               [rocnikovy-projekt.dashboard :refer [dashboard-page]]
               [rocnikovy-projekt.homepage :refer [home-page]]
               [rocnikovy-projekt.schoolpage :refer [school-page]]
-              [rocnikovy-projekt.login :refer [login]]))
+              [rocnikovy-projekt.login :refer [login]]
+              [rocnikovy-projekt.logged-bar :refer [logged-bar]]
+              [rocnikovy-projekt.api :refer [make-remote-call]]))
+
+;; -------------------------
+;; Actions
+
+(defn authenticate []
+  (make-remote-call "/token-login"
+    (fn [{user :user}]
+      (reset! logged-user-cursor user))))
 
 ;; -------------------------
 ;; Routes
 
 (defn app-page []
-  [ui/mui-theme-provider
-    {:mui-theme (get-mui-theme
-                  {:palette {:shadow-color "rgba(0, 0, 0, 0)" :primary1-color "#00c371"}})}
-    [@current-page-cursor @current-page-params-cursor]])
+  (authenticate)
+  (fn [] 
+    [ui/mui-theme-provider
+      {:mui-theme (get-mui-theme
+                    {:palette {:shadow-color "rgba(0, 0, 0, 0)" :primary1-color "#00c371"}})}
+      [:div
+        [@current-page-cursor @current-page-params-cursor]
+        (if (some? @logged-user-cursor) [logged-bar])]]))
 
 (secretary/defroute "/" []
   (reset! current-page-cursor #'home-page))

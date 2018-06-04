@@ -149,3 +149,16 @@ body {
 .Login__submit {
   margin-top: 1rem; 
 }
+
+.LoggedBar {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.LoggedBar__logout {
+  float: right;
+  text-decoration: underline;
+  cursor: pointer;
+  color: -webkit-link;
+}

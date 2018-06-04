@@ -1,17 +1,16 @@
 (ns rocnikovy-projekt.api
   (:require [compojure.core :refer [GET POST routes]]
             [ring.util.response :refer [response not-found]]
-            [ring.util.http-response :refer [unauthorized ok]]
+            [ring.util.http-response :refer [unauthorized]]
             [rocnikovy-projekt.database :refer [schools users session_tokens]]
             [rocnikovy-projekt.helpers :refer [generate-token]]
-            [korma.core :refer [select where insert values]]))
+            [korma.core :refer [select where insert values join]]))
 
 (def expiration-time 86400000)
 
 (defn api [] 
   (routes
     (GET "/schools" [] (response (select schools)))
-    ;;TODO check if string is parsable
     (GET "/schools/:id" [id]
       (let [school (select schools (where {:id (Integer/parseInt id)}))]
         (if (empty? school)
@@ -27,4 +26,13 @@
                                  :expiresat (+ (System/currentTimeMillis) expiration-time)}]
             (insert session_tokens (values newSessionToken))
             ;; set expiration time
-            {:cookies {"token" {:value (:token newSessionToken)}}}))))))
+            {:body {:user (first user)} :cookies {"token" {:value (:token newSessionToken)}}}))))
+    (GET "/token-login" {{token "token"} :cookies}
+      (if (some? token)
+        (let [user (select users
+                    (join session_tokens (= :session_tokens.userid :id))
+                    (where {:session_tokens.token (Integer/parseInt (:value token))}))]
+          (if (empty? user)
+            {}
+            (response {:user (first user)})))
+        {}))))

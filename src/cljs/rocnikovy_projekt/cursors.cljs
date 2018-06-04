@@ -7,3 +7,6 @@
 
 (def current-page-params-cursor
   (reagent/cursor app-state [:current-page :params]))
+
+(def logged-user-cursor
+  (reagent/cursor app-state [:loggedUser]))

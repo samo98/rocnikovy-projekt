@@ -10,7 +10,13 @@
         (if (some #(= (:status response) %) success-codes)
           (callback (:body response))))))
 
-(defn make-post-request [route options callback]
-  (go (let [response (<! (http/post (str "/api" route) options))]
-        (if (some #(= (:status response) %) success-codes)
-          (callback response)))))
+(defn make-post-request 
+  ([route options callback]
+   (go (let [response (<! (http/post (str "/api" route) options))]
+          (if (some #(= (:status response) %) success-codes)
+            (callback (:body response))))))
+  ([route options callback error-callback]
+   (go (let [response (<! (http/post (str "/api" route) options))]
+          (if (some #(= (:status response) %) success-codes)
+            (callback (:body response))
+            (error-callback response))))))
