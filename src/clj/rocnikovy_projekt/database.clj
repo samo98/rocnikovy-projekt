@@ -7,3 +7,7 @@
                      :password "a"}))
 
 (defentity schools)
+
+(defentity users)
+
+(defentity session_tokens)
