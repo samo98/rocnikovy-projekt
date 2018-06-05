@@ -5,3 +5,5 @@
   [:a {:href url :style {:text-decoration "none"}}
     [:div {:class "BackArrow"} (ic/navigation-arrow-back)
       [:div {:style {:margin "auto 0" :color "black"}} "Späť"]]])
+
+(defn generate-id [] (str (rand-int 1024)))

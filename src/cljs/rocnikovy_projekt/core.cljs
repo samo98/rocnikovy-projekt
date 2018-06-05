@@ -14,7 +14,8 @@
               [rocnikovy-projekt.login :refer [login]]
               [rocnikovy-projekt.logged-bar :refer [logged-bar]]
               [rocnikovy-projekt.api :refer [make-remote-call]]
-              [rocnikovy-projekt.register :refer [register]]))
+              [rocnikovy-projekt.register :refer [register]]
+              [rocnikovy-projekt.modals :refer [modals-renderer]]))
 
 ;; -------------------------
 ;; Actions
@@ -34,6 +35,7 @@
       {:mui-theme (get-mui-theme
                     {:palette {:shadow-color "rgba(0, 0, 0, 0)" :primary1-color "#00c371"}})}
       [:div
+        [modals-renderer]
         [@current-page-cursor @current-page-params-cursor]
         (if (some? @logged-user-cursor) [logged-bar])]]))
 

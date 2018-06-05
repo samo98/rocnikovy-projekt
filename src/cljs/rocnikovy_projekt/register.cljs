@@ -4,6 +4,7 @@
             [rocnikovy-projekt.helpers :refer [back-arrow]]
             [rocnikovy-projekt.state :refer [app-state]]
             [rocnikovy-projekt.api :refer [make-post-request]]
+            [rocnikovy-projekt.modals :refer [open-modal notice-dialog]]
             [rocnikovy-projekt.cursors :refer [logged-user-cursor]]
             [accountant.core :as accountant]))
 
@@ -36,7 +37,9 @@
       (reset! register-name-cursor "")
       (reset! register-password-cursor "")
       (reset! register-repeat-password-cursor "")
-      (accountant/navigate! "/"))
+      (open-modal notice-dialog {:header "Registration succesful"
+                                 :text "You can login with you username and password"}
+                  #(accountant/navigate! "/")))
     (fn [response]
       (reset! register-error-cursor (:body response)))))
   
