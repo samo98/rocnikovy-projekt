@@ -26,12 +26,14 @@
                                  :expiresat (+ (System/currentTimeMillis) expiration-time)}]
             (insert session_tokens (values newSessionToken))
             ;; set expiration time
-            {:body {:user (first user)} :cookies {"token" {:value (:token newSessionToken)}}}))))
+            {:body {:user (first user)} :cookies {"token" {:value (:token newSessionToken)
+                                                           :max-age (/ expiration-time 1000)}}}))))
     (GET "/token-login" {{token "token"} :cookies}
       (if (some? token)
         (let [user (select users
                     (join session_tokens (= :session_tokens.userid :id))
-                    (where {:session_tokens.token (Integer/parseInt (:value token))}))]
+                    (where {:session_tokens.token (Integer/parseInt (:value token))
+                            :session_tokens.expiresat [>= (System/currentTimeMillis)]}))]
           (if (empty? user)
             {}
             (response {:user (first user)})))
