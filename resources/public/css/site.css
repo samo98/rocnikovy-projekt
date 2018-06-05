@@ -162,3 +162,16 @@ body {
   cursor: pointer;
   color: -webkit-link;
 }
+
+.NoticeDialog__title {
+  margin: 0px;
+  padding-bottom: 20px;
+  font-size: 22px;
+  line-height: 32px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.870588);
+}
+
+.NoticeDialog__description {
+  padding-bottom: 20px;
+}
