@@ -16,7 +16,7 @@
 (defn open-modal [component props resolveFn]
   (let [id (generate-id)]
     (swap! modals-cursor #(conj % {:id id :component component :props props
-                                   :resolveFn (fn [] (close-modal id)(resolveFn))}))))
+                                   :resolveFn (fn [return-value] (close-modal id)(resolveFn return-value))}))))
 
 (defn notice-dialog [{{header :header text :text} :props resolveFn :resolveFn}]
   [ui/dialog {:open true :modal true}
@@ -27,6 +27,19 @@
         [ui/flat-button {:primary true
                          :label "OK"
                          :on-click resolveFn}]]]])
+
+(defn confirm-dialog [{{header :header text :text} :props resolveFn :resolveFn}]
+  [ui/dialog {:open true :modal true}
+    [:div {:class "NoticeDialog"}
+      [:div {:class "NoticeDialog__title"} header]
+      [:div {:class "NoticeDialog__description"} text]
+      [:div
+        [ui/flat-button {:primary true
+                         :label "Cancel"
+                         :on-click (fn [] (resolveFn {:ok false}))}]
+        [ui/flat-button {:primary true
+                         :label "Confirm"
+                         :on-click (fn [] (resolveFn {:ok true}))}]]]])
 
 (defn modals-renderer []
   [:div (map (fn [{id :id props :props resolveFn :resolveFn component :component}]

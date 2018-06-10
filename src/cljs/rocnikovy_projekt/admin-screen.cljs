@@ -5,7 +5,13 @@
             [rocnikovy-projekt.state :refer [app-state]]
             [reagent.core :as reagent]
             [cljs-react-material-ui.reagent :as ui]
-            [rocnikovy-projekt.api :refer [make-remote-call make-post-request]]))
+            [rocnikovy-projekt.api :refer [make-remote-call make-post-request make-delete-call]]
+            [rocnikovy-projekt.modals :refer [open-modal confirm-dialog]]))
+
+;; -------------------------
+;; Helpers
+
+(defn is-me [id] (= id (keyword (str (:id @logged-user-cursor)))))
 
 ;; -------------------------
 ;; Cursors
@@ -33,6 +39,12 @@
     (fn [response]
       (reset! (user-cursor userid) response))))
 
+(defn delete-user [userid]
+  (make-delete-call (str "/users/" userid)
+    (fn []
+      (swap! users-cursor
+        (fn [users] (into {} (filter #(not= (js/parseInt userid) (:id (second %))) users)))))))
+
 ;; -------------------------
 ;; Views
 
@@ -41,9 +53,16 @@
                  :hoverable true}
     [ui/table-row-column (:name (get @users-cursor id))]
     [ui/table-row-column
-      [ui/toggle {:disabled (= id (keyword (str (:id @logged-user-cursor))))
+      [ui/toggle {:disabled (is-me id)
                   :toggled (:admin (get @users-cursor id))
-                  :on-click (fn [] (toggle-admin-rights id (not (:admin (get @users-cursor id)))))}]]])
+                  :on-click (fn [] (toggle-admin-rights id (not (:admin (get @users-cursor id)))))}]]
+    [ui/table-row-column
+      [ui/flat-button {:label "DELETE"
+                       :disabled (is-me id)
+                       :on-click (fn []
+                                  (open-modal confirm-dialog {:header "DELETE USER"
+                                                              :text "Do you really want to delete this user?"}
+                                    #(when (:ok %) (delete-user (name id)))))}]]])
 
 (defn all-users []
   (fetch-users)
@@ -54,7 +73,8 @@
             [ui/table-header {:adjust-for-checkbox false :display-select-all false}
               [ui/table-row
                 [ui/table-header-column "Username"]
-                [ui/table-header-column "Admin"]]]
+                [ui/table-header-column "Admin"]
+                [ui/table-header-column]]]
             [ui/table-body
               (for [id (keys @users-cursor)]
                 ^{:key id} [user-row id])]])]))

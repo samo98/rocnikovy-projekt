@@ -1,5 +1,5 @@
 (ns rocnikovy-projekt.api
-  (:require [compojure.core :refer [GET POST routes]]
+  (:require [compojure.core :refer [GET POST DELETE routes]]
             [ring.util.response :refer [response not-found]]
             [ring.util.http-response :refer [unauthorized bad-request]]
             [rocnikovy-projekt.database :refer [schools users session_tokens]]
@@ -53,4 +53,7 @@
     (POST "/toggle-admin-rights" {{userid :userid admin :admin} :body} 
       (update users (set-fields {:admin admin})
                     (where {:id (Integer/parseInt userid)}))
-      (response (first (select users (where {:id (Integer/parseInt userid)})))))))
+      (response (first (select users (where {:id (Integer/parseInt userid)})))))
+    (DELETE "/users/:id" [id]
+      (delete users (where {:id (Integer/parseInt id)}))
+      {})))

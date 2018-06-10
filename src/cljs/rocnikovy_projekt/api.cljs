@@ -20,3 +20,8 @@
           (if (some #(= (:status response) %) success-codes)
             (callback (:body response))
             (error-callback response))))))
+
+(defn make-delete-call [route callback]
+  (go (let [response (<! (http/delete (str "/api" route)))]
+        (if (some #(= (:status response) %) success-codes)
+          (callback (:body response))))))
