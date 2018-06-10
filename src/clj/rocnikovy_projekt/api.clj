@@ -4,7 +4,7 @@
             [ring.util.http-response :refer [unauthorized bad-request]]
             [rocnikovy-projekt.database :refer [schools users session_tokens]]
             [rocnikovy-projekt.helpers :refer [generate-token]]
-            [korma.core :refer [select where insert values join delete]]))
+            [korma.core :refer [select where insert values join delete set-fields update]]))
 
 (def expiration-time 86400000)
 
@@ -48,6 +48,9 @@
           (insert users (values {:name username
                                  :password password
                                  :createdat (System/currentTimeMillis)}))
-          (bad-request "Username is already used"))))))
-      
-        
+          (bad-request "Username is already used"))))
+    (GET "/all-users" [] (response (select users)))
+    (POST "/toggle-admin-rights" {{userid :userid admin :admin} :body} 
+      (update users (set-fields {:admin admin})
+                    (where {:id (Integer/parseInt userid)}))
+      (response (first (select users (where {:id (Integer/parseInt userid)})))))))

@@ -12,9 +12,14 @@
                          :primary true
                          :on-click (fn [] (accountant/navigate! "/login"))
                          :label "Login"
-                         :disabled @logged-user-cursor}]
+                         :disabled (boolean @logged-user-cursor)}]
       [ui/raised-button {:class "Homepage__login"
                          :primary true
                          :on-click (fn [] (accountant/navigate! "/register"))
                          :label "Register"
-                         :disabled @logged-user-cursor}]]])
+                         :disabled (boolean @logged-user-cursor)}]]
+    (when (:admin @logged-user-cursor)
+      [ui/raised-button {:class "Homepage__login"
+                         :secondary true
+                         :on-click (fn [] (accountant/navigate! "/admin"))
+                         :label "Admin Screen"}])])

@@ -71,7 +71,7 @@
                                                 (keys @schools-cursor))))}]
         [ic/navigation-cancel {:class-name "Dashboard__search__cancel" :on-click (fn [] (reset! dashboard-search-cursor {:text ""}))}]]
       (loading-helper {:is-loaded (some? @schools-cursor)}
-        [ui/table {:class-name "Dashboard__table" :selectable false}
+        [ui/table {:selectable false}
           [ui/table-header {:adjust-for-checkbox false :display-select-all false}
             [ui/table-row
               [ui/table-header-column "Názov"]]]

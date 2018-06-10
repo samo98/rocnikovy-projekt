@@ -15,7 +15,8 @@
               [rocnikovy-projekt.logged-bar :refer [logged-bar]]
               [rocnikovy-projekt.api :refer [make-remote-call]]
               [rocnikovy-projekt.register :refer [register]]
-              [rocnikovy-projekt.modals :refer [modals-renderer]]))
+              [rocnikovy-projekt.modals :refer [modals-renderer]]
+              [rocnikovy-projekt.admin-screen :refer [admin-screen]]))
 
 ;; -------------------------
 ;; Actions
@@ -47,6 +48,9 @@
 
 (secretary/defroute "/register" []
   (reset! current-page-cursor #'register))
+
+(secretary/defroute "/admin" []
+  (reset! current-page-cursor #'admin-screen))
 
 (secretary/defroute "/dashboard" []
   (reset! current-page-cursor #'dashboard-page))

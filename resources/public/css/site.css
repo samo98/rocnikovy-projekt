@@ -175,3 +175,30 @@ body {
 .NoticeDialog__description {
   padding-bottom: 20px;
 }
+
+.AdminScreen {
+  margin: 10px;
+  height: calc(100vh - 20px);
+  display: flex;
+  flex-direction: column;
+}
+
+.AdminScreen__title {
+  font-weight: bold;
+  text-align: center;
+  font-size: 2.5rem;
+}
+
+.ComingSoon {
+  font-size: 3rem;
+  color: #9e9e9e;
+  height: 100%;
+  display: flex;
+  padding-top: 4rem;
+  align-items: center;
+  flex-direction: column;
+}
+
+.UserRow {
+  cursor: pointer;
+}
