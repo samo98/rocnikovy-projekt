@@ -5,6 +5,7 @@
             [rocnikovy-projekt.state :refer [app-state]]
             [rocnikovy-projekt.api :refer [make-post-request]]
             [rocnikovy-projekt.cursors :refer [logged-user-cursor]]
+            [rocnikovy-projekt.loading :refer [loading-helper]]
             [accountant.core :as accountant]))
 
 ;; -------------------------
@@ -38,26 +39,27 @@
 (defn login []
   [:div {:class "Login__wrapper"}
     [back-arrow "/"]
-    [:div {:class "Login"}
-      [:div {:class "Login__title"} "Login"]
-      [:form
-        [ui/text-field {:floating-label-text "Enter your user name" 
-                        :full-width true
-                        :value (or @login-name-cursor "")
-                        :error-text @login-error-cursor
-                        :on-change (fn [_ text]
-                                    (reset! login-error-cursor "")
-                                    (reset! login-name-cursor text))}]
-        [ui/text-field {:floating-label-text "Enter your password"
-                        :full-width true
-                        :type "password"
-                        :value (or @login-password-cursor "")
-                        :on-change (fn [_ text]
-                                    (reset! login-error-cursor "")
-                                    (reset! login-password-cursor text))}]
-        ; check if username is valid, otherwise disable button
-        [ui/raised-button {:class "Login__submit"
-                           :primary true
-                           :label "Login"
-                           :full-width true
-                           :on-click login-request}]]]])
+    (loading-helper {:is-loaded (not @logged-user-cursor) :placeholder "You are already logged in"}
+      [:div {:class "Login"}
+        [:div {:class "Login__title"} "Login"]
+        [:form
+          [ui/text-field {:floating-label-text "Enter your user name" 
+                          :full-width true
+                          :value (or @login-name-cursor "")
+                          :error-text @login-error-cursor
+                          :on-change (fn [_ text]
+                                      (reset! login-error-cursor "")
+                                      (reset! login-name-cursor text))}]
+          [ui/text-field {:floating-label-text "Enter your password"
+                          :full-width true
+                          :type "password"
+                          :value (or @login-password-cursor "")
+                          :on-change (fn [_ text]
+                                      (reset! login-error-cursor "")
+                                      (reset! login-password-cursor text))}]
+          ; check if username is valid, otherwise disable button
+          [ui/raised-button {:class "Login__submit"
+                             :primary true
+                             :label "Login"
+                             :full-width true
+                             :on-click login-request}]]])])

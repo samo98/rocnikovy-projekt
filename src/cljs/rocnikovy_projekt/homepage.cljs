@@ -1,6 +1,7 @@
 (ns rocnikovy-projekt.homepage
   (:require [cljs-react-material-ui.reagent :as ui]
-            [accountant.core :as accountant]))
+            [accountant.core :as accountant]
+            [rocnikovy-projekt.cursors :refer [logged-user-cursor]]))
 
 (defn home-page []
   [:div {:class "Homepage"}
@@ -10,8 +11,10 @@
       [ui/raised-button {:class "Homepage__login"
                          :primary true
                          :on-click (fn [] (accountant/navigate! "/login"))
-                         :label "Login"}]
+                         :label "Login"
+                         :disabled @logged-user-cursor}]
       [ui/raised-button {:class "Homepage__login"
                          :primary true
                          :on-click (fn [] (accountant/navigate! "/register"))
-                         :label "Register"}]]])
+                         :label "Register"
+                         :disabled @logged-user-cursor}]]])

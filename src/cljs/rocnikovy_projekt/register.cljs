@@ -6,6 +6,7 @@
             [rocnikovy-projekt.api :refer [make-post-request]]
             [rocnikovy-projekt.modals :refer [open-modal notice-dialog]]
             [rocnikovy-projekt.cursors :refer [logged-user-cursor]]
+            [rocnikovy-projekt.loading :refer [loading-helper]]
             [accountant.core :as accountant]))
 
 ;; -------------------------
@@ -49,33 +50,34 @@
 (defn register []
   [:div {:class "Login__wrapper"}
     [back-arrow "/"]
-    [:div {:class "Login"}
-      [:div {:class "Login__title"} "Register"]
-      [:form
-        [ui/text-field {:floating-label-text "Enter your user name" 
-                        :full-width true
-                        :value (or @register-name-cursor "")
-                        :error-text @register-error-cursor
-                        :on-change (fn [_ text]
-                                    (reset! register-error-cursor "")
-                                    (reset! register-name-cursor text))}]
-        [ui/text-field {:floating-label-text "Enter your password"
-                        :full-width true
-                        :type "password"
-                        :value (or @register-password-cursor "")
-                        :on-change (fn [_ text]
-                                    (reset! register-error-cursor "")
-                                    (reset! register-password-cursor text))}]
-        [ui/text-field {:floating-label-text "Type your password again"
-                        :full-width true
-                        :type "password"
-                        :value (or @register-repeat-password-cursor "")
-                        :on-change (fn [_ text]
-                                    (reset! register-error-cursor "")
-                                    (reset! register-repeat-password-cursor text))}]
-        [ui/raised-button {:class "Login__submit"
-                           :primary true
-                           :label "Register"
-                           :full-width true
-                           :disabled (validate-input)
-                           :on-click register-request}]]]])
+    (loading-helper {:is-loaded (not @logged-user-cursor) :placeholder "You are already logged in"}
+      [:div {:class "Login"}
+        [:div {:class "Login__title"} "Register"]
+        [:form
+          [ui/text-field {:floating-label-text "Enter your user name" 
+                          :full-width true
+                          :value (or @register-name-cursor "")
+                          :error-text @register-error-cursor
+                          :on-change (fn [_ text]
+                                      (reset! register-error-cursor "")
+                                      (reset! register-name-cursor text))}]
+          [ui/text-field {:floating-label-text "Enter your password"
+                          :full-width true
+                          :type "password"
+                          :value (or @register-password-cursor "")
+                          :on-change (fn [_ text]
+                                      (reset! register-error-cursor "")
+                                      (reset! register-password-cursor text))}]
+          [ui/text-field {:floating-label-text "Type your password again"
+                          :full-width true
+                          :type "password"
+                          :value (or @register-repeat-password-cursor "")
+                          :on-change (fn [_ text]
+                                      (reset! register-error-cursor "")
+                                      (reset! register-repeat-password-cursor text))}]
+          [ui/raised-button {:class "Login__submit"
+                             :primary true
+                             :label "Register"
+                             :full-width true
+                             :disabled (validate-input)
+                             :on-click register-request}]]])])
