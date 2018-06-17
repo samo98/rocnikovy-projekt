@@ -11,7 +11,7 @@
 (defn api [] 
   (routes
     (GET "/schools" [] (response (select schools)))
-    (GET "/schools/:id" [id]
+    (GET "/schools/:id{[0-9]+}" [id]
       (let [school (select schools (where {:id (Integer/parseInt id)}))]
         (if (empty? school)
           (not-found (str "No school with id " id " found"))
@@ -25,7 +25,6 @@
                                  :createdat (System/currentTimeMillis) 
                                  :expiresat (+ (System/currentTimeMillis) expiration-time)}]
             (insert session_tokens (values newSessionToken))
-            ;; set expiration time
             {:body {:user (first user)} :cookies {"token" {:value (:token newSessionToken)
                                                            :max-age (/ expiration-time 1000)}}}))))
     (GET "/token-login" {{token "token"} :cookies}
@@ -49,11 +48,11 @@
                                  :password password
                                  :createdat (System/currentTimeMillis)}))
           (bad-request "Username is already used"))))
-    (GET "/all-users" [] (response (select users)))
+    (GET "/users" [] (response (select users)))
     (POST "/toggle-admin-rights" {{userid :userid admin :admin} :body} 
       (update users (set-fields {:admin admin})
                     (where {:id (Integer/parseInt userid)}))
       (response (first (select users (where {:id (Integer/parseInt userid)})))))
-    (DELETE "/users/:id" [id]
+    (DELETE "/users/:id{[0-9]+}" [id]
       (delete users (where {:id (Integer/parseInt id)}))
       {})))

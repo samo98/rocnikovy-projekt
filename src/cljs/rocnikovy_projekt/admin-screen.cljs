@@ -26,7 +26,7 @@
 ;; Actions
 
 (defn fetch-users []
-  (make-remote-call "/all-users"
+  (make-remote-call "/users"
     (fn [response]
       (reset! users-cursor
         (reduce
